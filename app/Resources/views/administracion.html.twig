@@ -1,0 +1,93 @@
+{% extends '::base.html.twig' %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/jquery/jquery-1.9.0.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/funciones.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/principal.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/jquery/jquery.validate.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/jquery/jquery.validate-es.js') }}" type="text/javascript"></script>  
+    <script src="{{ asset('js/jquery/jquery.dataTables.min.js') }}" type="text/javascript"></script> 
+    <script>
+        var rolAdmin = {% if is_granted('ROLE_ADMINISTRADOR') %} true {% else %} false {% endif %};
+        var urlActualizarEstados = '{{ path('administracion_sucursal_rol', {'sucursal_id': app.user.sucursal ? app.user.sucursal.id : null }) }}';
+        var iniciarDataTable = true;
+        var path = '{{path('administracion_index')}}';
+        var urlTiempo = '{{path('administracion_tiempo')}}'; 
+        var estado = 'editar';
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="{{ asset('css/estilos.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/jquery/jquery.validate.css') }}" rel="stylesheet" type="text/css">    
+    <link href="{{ asset('css/jquery/jquery.dataTables.css') }}" rel="stylesheet" type="text/css">     
+{% endblock %}
+
+{% block body %}
+    {#{% include 'RobotBundle:Includes:console.html.twig' %}#}
+    <div id="contenedor">
+        <div id="encabezado">
+            <table width="1200" border="0" align="center" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td width="64%" height="31" align="right" bgcolor="#4D4D4D" class="txt_blanco12">
+
+                        <script language="JavaScript" type="text/javascript">
+                        MostrarFecha();
+                        </script>
+
+                        </td>
+                        <td width="10%" align="center" class="txt_grisclaro12">
+                            <div class="recuadro3">
+                                <form name="reloj24">
+                                    <input name="digitos" type="text" class="nobord" size="10" />
+                                </form>
+                            </div>
+                        </td>
+                        <td width="0%" align="center" class="txt_grisclaro12"><img src="{{ asset('images/linea_ver_gris.jpg') }}" width="1" height="21" /></td>
+                        <td width="17%" align="center" class="txt_grisclaro12">Bienvenido/a {{ app.user.username}}</td>
+                        <td width="9%" align="right"><div class="btnsalir"> <a href="{{ path('administracion_pre_logout')}}"><img src="{{ asset('images/icono_salir.png') }}" width="11" height="11" /> Salir</a></div></td>
+                    </tr>
+                </table>
+                <table width="1200" border="0" align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="12%" height="84" align="center"><img src="{{ asset('images/logo_home.png') }}" width="129" height="77" border="0" usemap="#Map" /></td>
+                        <td width="11%" align="center" class="txt_gris12_bold">Buscar Cliente</td>
+                        <td width="29%" align="center"><img src="{{ asset('images/icono_eliminar_rojo.png')}}" id="clearTitulo" title="Quitar texto de búsqueda" style="display: none;"><input name="textfield" type="text" class="txt_gris12" id="buscador" placeholder="Teléfono / Celular  / Apellido / Nombre / Domicilio" size="60" /></td>
+                        <td width="9%" align="center"><div class="btnbuscar" > <a href="#"><img src="{{ asset('images/icono_buscar.png') }}" width="16" height="16" /></a></div></td>
+                        <td width="13%" align="center">{% if is_granted('ROLE_GENERAL') or is_granted('ROLE_GERENTE') %}<div class="btncliente"> <a href="{{ path( 'administracion_cliente_editar', {'id':0})}}"><img src="{{ asset('images/icono_nuevocliente.png') }}" width="17" height="17" /> Nuevo Cliente</a></div>{% endif%}</td>
+                        <td width="26%" class="sucursales_rol" align="center" bgcolor="#bebebe">
+                            {{ render(controller('AdministracionBundle:Menu:comandasPorRol'))  }}
+                        </td>                  
+                    </tr>
+                </table>
+                <map name="Map" id="Map">
+                    <area shape="rect" coords="7,4,122,74" href="{{ path('administracion_index') }}" />
+                </map>
+                <div id="buscarcliente" data-url="{{ path('administracion_cliente_busqueda') }}" style="display:none;" >
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="btn_rojo12_bold">
+                        <tr>
+                            <td align="center"><img src="{{ asset('images/loading_2.gif') }}" /></td>
+                            
+                        </tr>
+                    </table>                   
+                </div>
+                <div class="estado_comandas">{{ render(controller('AdministracionBundle:Menu:detalleComandas'))  }}</div>
+            </div>
+            <div id="contenido">
+                <div id="seccionesadmin">
+                    {% include 'AdministracionBundle:Parciales:menu.html.twig' %}
+                </div>
+                {% if not is_granted('ROLE_ADMINISTRADOR')  %}
+                    {{ render(controller('AdministracionBundle:Comanda:verComanda'))  }}
+                {% endif %}
+                {% block content %}{% endblock %}
+                
+            </div>
+            {#<div class="txt_grisclaro11" id="pie">&nbsp;&nbsp;All rights reserved &reg; La Fachada 2013 . Design by ilitia.com.ar&nbsp;&nbsp;</div>#}
+
+    </div>
+    
+
+
+   
+{% endblock %}

@@ -1,0 +1,71 @@
+<div id="comandaproceso" data-ocultar="0" style="display: none;" >
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="63%" height="24" align="center" bgcolor="#666666" class="txt_blanco12_bold">Comanda</td>
+            <td width="23%" align="center" bgcolor="#666666"><span class="txt_blanco12_bold">Repartidor</span><br /></td>
+            <td width="9%" align="center" bgcolor="#666666"><span class="txt_blanco12_bold">Enviado</span></td>
+            <td width="5%" align="center" bgcolor="#666666">&nbsp;</td>
+        </tr>
+        {% for comanda in comandasEnProceso%}
+        {% set domicilio = comanda.domicilio %}
+        <tr id="comanda_{{ comanda.id }}">
+            <td height="71" align="left" class="bordeabajo"><span class="txt_gris12_bold"><a href="{{ path('administracion_comanda_editar',{'id':comanda.id}) }}" class="txt_gris12_bold">{{ comanda.codigo }}</a> /</span><span class="txt_gris12"> Hora: {{ comanda.hora | date('Hi') }}<br />
+                </span>      <span class="txt_negro12_bold">{% if domicilio is not null %}{{ domicilio.calle }}- Piso {{ domicilio.piso}} - Dpto {{ domicilio.departamento }}{% endif %}</span><br />      </td>
+            <td align="center" class="bordeabajo">
+                <select name="repartidorProceso" id="repartidor_menu_{{ comanda.id }}">
+                    <option value="0" selected="selected">Seleccione</option>
+                    {% set reptds = repartidores[comanda.sucursal.id] %} 
+                    {% for r in reptds %}
+                        <option value="{{ r.id }}">{{ r.nombre }}</option>
+                    {% endfor %}                   
+                </select>
+            </td>
+            <td align="center" class="bordeabajo"><input type="checkbox" name="checkbox[]" data-comanda="{{ comanda.id }}" data-url="{{ path('administracion_comanda_enviar_menu', { 'comanda_id':comanda.id }) }}" data-comodin="menu" class="enviar_comanda" id="checkbox_{{ comanda.id }}" /></td>
+            <td align="center" class="bordeabajo"><a href="#" class="cancelar_comanda" data-comanda="{{ comanda.id }}" data-url="{{ path('administracion_comanda_cancelar_menu', { 'comanda_id':comanda.id }) }}" title="Cancelar comanda"><img src="{{ asset('images/icono_eliminar.png') }}" width="11" height="11" /></a></td>
+        </tr>
+        {% else %}
+        <tr>            
+            <td align="center" class="bordeabajo" colspan="4" ><span class="txt_negro12_bold">No hay comandas en proceso</span></td>            
+        </tr>        
+        {% endfor %}
+       
+    </table>
+</div>
+<div id="comandademorada" data-ocultar="0" style="display: none;" >
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td width="63%" height="24" align="center" bgcolor="#ff1a2d" class="txt_blanco12_bold">Comanda</td>
+            <td width="23%" align="center" bgcolor="#ff1a2d"><span class="txt_blanco12_bold">Repartidor</span><br /></td>
+            <td width="9%" align="center" bgcolor="#ff1a2d"><span class="txt_blanco12_bold">Enviado</span></td>
+            <td width="5%" align="center" bgcolor="#ff1a2d">&nbsp;</td>
+        </tr>
+        {% for comanda in comandasDemoradas%}
+        {% set domicilio = comanda.domicilio %}  
+        {% set tel = comanda.cliente.primerTelefono %}
+        <tr id="comanda_{{ comanda.id }}">
+            <td height="71" align="left" class="bordeabajo"><span class="txt_gris12_bold"><a href="{{ path('administracion_comanda_editar',{'id':comanda.id}) }}" class="txt_gris12_bold">{{ comanda.codigo }}</a> /</span><span class="txt_gris12"> Hora: {{ comanda.hora | date('Hi') }}<br />
+                </span>      <span class="txt_rojo12_bold">{% if domicilio is not null %}{{ domicilio.calle  }}- Piso {{ domicilio.piso}} - Dpto {{ domicilio.departamento }}{% endif %}</span><br />
+                <span class="txt_gris12"> Tel. ({{ tel.codigo }}) {{ tel.numero }}</span><br />      </td>
+            <td align="center" class="bordeabajo">
+                <select name="repartidorDemora" id="repartidor_menu_{{ comanda.id }}">
+                    <option value="0" selected="selected">Seleccione</option>
+                    {% set reptds = repartidores[comanda.sucursal.id] %} 
+                    {% for r in reptds %}
+                        <option value="{{ r.id }}">{{ r.nombre }}</option>
+                    {% endfor %}                   
+                </select>
+                </select></td>
+            <td align="center" class="bordeabajo"><input type="checkbox" id="checkbox_{{ comanda.id }}"  data-comanda="{{ comanda.id }}" data-url="{{ path('administracion_comanda_enviar_menu', { 'comanda_id':comanda.id }) }}" data-comodin="menu" class="enviar_comanda" /></td>
+            <td align="center" class="bordeabajo"><a href="#" class="cancelar_comanda" data-comanda="{{ comanda.id }}" data-url="{{ path('administracion_comanda_cancelar_menu', { 'comanda_id':comanda.id }) }}" title="Cancelar comanda"><img src="{{ asset('images/icono_eliminar.png') }}" width="11" height="11" /></a></td>
+        </tr>  
+        {% else %}
+        <tr>            
+            <td align="center" class="bordeabajo" colspan="4" ><span class="txt_negro12_bold">No hay comandas demoradas</span></td>            
+        </tr>           
+        {% endfor %}
+    </table>
+</div>
+{% if app.request.method == 'POST' %}
+<script>var iniciarDataTable = false;</script>
+<script src="{{ asset('js/principal.js') }}" type="text/javascript"></script>
+{% endif %}

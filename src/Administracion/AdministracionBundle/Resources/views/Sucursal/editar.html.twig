@@ -1,0 +1,48 @@
+{% extends '::administracion.html.twig' %}
+
+{% block content %}
+<form class="formulario" action="{{ path('administracion_sucursal_editar') }}" method="post">
+<input type="hidden" name="id" value="{{ sucursal.id  }}">
+  <div id="contenidogeneraladmin">
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+      <tr>
+        <td width="84%" align="left"><span class="txt_negro16">Nueva Sucursal</span>
+          <table width="15%" border="0" align="right" cellpadding="0" cellspacing="0">
+            <tr>
+              <td align="right"><span class="txt_grisclaro11">*Campos Obligatorios</span></td>
+            </tr>
+          </table></td>
+      </tr>
+      <tr>
+        <td height="103" align="center" bgcolor="#f1f1f1"><table width="100%" border="0" cellspacing="0" cellpadding="5">
+          <tr>
+            <td height="29" align="left" class="txt_gris12_bold">Nombre</td>
+            <td align="left">{{ form_widget(form.nombre) }}
+              <span class="txt_gris12_bold">*</span></td>
+            <td align="left">{{ form_errors(form.nombre) }}</td>
+          </tr>
+          <tr>
+            <td height="29" align="left" class="txt_gris12_bold">Domicilio</td>
+            <td align="left">{{ form_widget(form.domicilio) }}
+              <span class="txt_gris12_bold">*</span></td>
+            <td align="left">{{ form_errors(form.domicilio) }}</td>
+          </tr>
+          <tr>
+            <td height="29" align="left" class="txt_gris12_bold">Tel./ Cel</td>
+            <td align="left">{{ form_widget(form.telefono) }}</td>
+            <td align="left">{{ form_errors(form.telefono) }}</td>
+          </tr>
+        </table></td>
+      </tr>
+    </table>
+    <br />
+    {{ form_errors(form) }}
+    {{ form_rest(form) }}
+    <table width="233" height="36" border="0" align="center" cellspacing="3">
+      <tr>
+        <td width="225" align="center"><div class="btnseccionesact"> <a href="#" class="enviar">Guardar sucursal</a></div></td>
+      </tr>
+    </table>
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends '::administracion.html.twig' %}
+
+{% block content %}
+<div id="contenidogeneraladmin">
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+        <tr>
+            <td height="26" align="left" class="txt_grisclaro12">
+                <table width="140" border="0" align="right" cellpadding="3" cellspacing="0">
+                    <tr>
+                        <td width="13"><img src="{{ asset('images/icono_agregar.png')  }}" alt="" width="12" height="12" /></td>
+                        <td width="108"><a href="{{ path('administracion_sucursal_editar', {'id':0}) }}" class="txt_negro12_bold"> Agregar Sucursal</a></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+   <table id="dataTable" width="100%" border="0" cellspacing="0" cellpadding="3" class="display">
+       <thead>
+        <tr>
+             <th width="30%" align="center" bgcolor="#CCCCCC"><span class="txt_blanco12_bold">Nombre</span></th>
+             <th width="30%" align="center" bgcolor="#CCCCCC"><span class="txt_blanco12_bold">Domicilio</span></th>
+             <th width="30%" align="center" bgcolor="#CCCCCC"><span class="txt_blanco12_bold">Tel.</span></th>
+             <th width="3%" align="center" bgcolor="#CCCCCC" class="bordeabajo">&nbsp;</th>
+             <th width="3%" align="center" bgcolor="#CCCCCC" class="bordeabajo">&nbsp;</th>
+         </tr>
+       </thead> 
+       <tbody>
+           {% for sucursal in sucursales %}
+            <tr>
+                <td align="center" class="bordeabajo"><span class="txt_gris12_bold"><strong>{{ sucursal.nombre }}</strong></span><span class="txt_rojo16"></span></td>
+                <td align="center" class="bordeabajo"><span class="txt_gris12">{{ sucursal.domicilio }}</span></td>
+                <td height="47" align="center" class="bordeabajo"><span class="txt_gris12">{{ sucursal.telefono }}</span></td>
+                <td align="center" class="bordeabajo"><a href="{{ path('administracion_sucursal_editar', {'id':sucursal.id}) }}"><img src="{{ asset('images/icono_editar.png')  }}" width="16" height="16" onclick="MM_showHideLayers('mapa', '', 'show')" /></a></td>
+                <td align="center" class="bordeabajo"><a href="{{ path('administracion_sucursal_eliminar', {'id':sucursal.id}) }}"><img src="{{ asset('images/icono_eliminar_rojo.png')  }}" width="16" height="16" /></a></td>
+            </tr> 
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <br />
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+jms_security_extra:
+    secure_all_services: false
+    expressions: true
+
+security:
+    encoders:
+        Administracion\ModeloBundle\Entity\Usuario: { algorithm: sha512, iterations: 5 }
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        usuarios:
+            entity: { class: Administracion\ModeloBundle\Entity\Usuario, property: username }
+
+    firewalls:
+        robot:
+            pattern:     ^/delivery
+            anonymous:   ~
+            provider:    usuarios            
+            form_login:
+                login_path: login
+                check_path: login_check
+                use_referer: true
+                default_target_path: administracion_pre_index
+                always_use_default_target_path: true
+            logout:
+                path: logout
+                target: /delivery
+            remember_me:
+                key:      delivery
+                lifetime: 36000
+
+    access_control:
+        - { path: ^/delivery/datos, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/delivery/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/delivery/login_check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/delivery/*, roles: [ROLE_ADMINISTRADOR,ROLE_GENERAL,ROLE_GERENTE] }

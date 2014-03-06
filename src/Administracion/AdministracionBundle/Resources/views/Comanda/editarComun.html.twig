@@ -1,0 +1,103 @@
+{% extends '::administracion.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/comanda.js') }}" type="text/javascript"></script> 
+{% endblock %}
+{% block content %}
+<div id="menu">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td height="48" align="center" class="txt_negro16">Men&uacute;</td>
+    </tr>
+</table>
+ {% for categoria in categorias %}
+    {% if categoria.nombre != "Adicionales/Recargos" and categoria.nombre != "Fainá" %}   
+    <div class="{% if categoria.id == orden.categoria.id %}btnmenuactivo {% else %} btnmenu{% endif %}"> <a href="#" data-categoria="{{ categoria.id }}" class="btnmenu">{{ categoria.nombre }}</a></div>
+  <br />
+    {% endif %}
+ {% endfor %} 
+</div>
+ {% set categoria = orden.categoria %}
+<div id="contenidocentro">
+{% set cantidadTotal = 0 %}    
+    <form class="formulario" action="{{ path('administracion_comanda_editar_orden_comun') }}" method="post">
+    <input type="hidden" value="{{ estado}}" name="estado" />        
+    <input type="hidden" value="{{ orden.id }}" name="orden_id" />
+    <input type="hidden" value="editar" name="{{ app.request.get('accion') }}" />
+    <span class="txt_rojo12_bold">{{ categoria }} &gt;</span><span class="txt_gris12_bold"> Seleccione gustos y cantidades</span><br />
+    <br />
+    {% set subcategorias = categoria.subcategorias %}
+    {% for subcategoria in subcategorias %}
+    <table width="100%" border="0" cellspacing="3">
+        <tr>
+            <td width="233" height="31" align="left" class="txt_negro16_bold">Abiertas</td>
+            <td width="233" align="left" class="txt_negro16_bold">&nbsp;</td>
+            <td width="216" align="left" class="txt_negro16_bold">&nbsp;</td>
+        </tr>
+    </table>
+    <table width="100%"border="0" cellspacing="3">
+        {% set productos = subcategoria.productos %}
+        {% for producto in productos%}
+            {% if loop.index is not divisibleby(2) %}
+            <tr>
+            {% endif %}
+                <td width="50%" align="left" valign="top">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                        <tr>
+                            <td width="73%" class="txt_gris12"><a title="{{ producto.textoDescriptivo }}">{{ producto.nombre }}</a></td>
+                            <td width="9%" class="txt_gris12"><input name="productos[]" type="hidden" value="{{ producto.id}}" class="txt_gris12_listado" id="textfield2" size="2" /><input name="cantidades[]" {% if orden.valorProductoEnDetalle(producto.id) > 0%}{% set cantidadTotal = cantidadTotal + orden.valorProductoEnDetalle(producto.id)  %} value="{{ orden.valorProductoEnDetalle(producto.id)}}" {% endif %} type="text" class="txt_gris12_listado unidades" id="textfield2" size="2" /></td>
+                            <td width="18%" class="txt_gris12"><span class="txt_grisclaro11">Unid.</span></td>
+                        </tr>                
+                    </table>
+                </td> 
+                {% if loop.last and loop.index is not divisibleby(2) %}
+                    <td width="50%" align="left" valign="top"></td>
+                {% endif %}
+            {% if loop.last or loop.index is divisibleby(2) %}
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+
+    {% if not loop.last %}
+        <br />
+        <img src="{{ asset('images/linea_hor_gris.jpg') }}" width="700" height="2" /><br />
+        <br />  
+    {% endif %}
+
+    {% endfor %}
+
+    <br />
+      <br />
+      <span class="txt_gris12_bold">Cantidad Total: </span><span class="txt_negro16"><span id="totalUnidades">{{ cantidadTotal }}</span> unidades<br />
+        </span><br />
+      <img src="{{ asset('images/linea_hor_gris.jpg')  }}" width="700" height="2" /><br />
+      <br />
+      <span class="txt_rojo12_bold">{{ categoria }} &gt; </span><span class="txt_gris12_bold">Comentario del Cliente</span> <br />
+      <br />
+      <textarea name="comentarios" cols="120" rows="3" class="txt_gris12" id="comentarios">{{ orden.comentario }}</textarea>
+      <br />
+      <br />
+      <img src="{{ asset('images/linea_hor_gris.jpg') }}" alt="" width="700" height="2" /> <br />
+      <br />
+      <table width="100%" border="0" cellspacing="0" cellpadding="3">
+        <tr>
+          <td align="center"><div class="btnfondorojo"> <a href="#" class="enviar_comanda_edicion"> Agregar a comanda</a></div></td>
+        </tr>
+      </table>
+    </form>
+      <script>
+
+        $('.enviar_comanda_edicion').click(function(e) {  
+            if(calcularTotalUnidades()){        
+                e.preventDefault();
+                $('.formulario').submit();  
+            } else {
+                alert('Debe indicar la cantidad de unidades');
+            }   
+
+        });      
+    </script>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends '::administracion.html.twig' %}
+
+{% block content %}  
+<form class="formulario" action="{{ path('administracion_producto_editar') }}" method="post">
+<input type="hidden" name="id" value="{{ producto.id  }}">
+<input type="hidden" name="categoriaId" value="{{ categoria.id  }}">
+<div id="contenidogeneraladmin">
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+        <tr>
+            <td width="84%" align="left" ><span class="txt_negro16">Nuevo Producto</span>
+                <table width="15%" border="0" align="right" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="right"><span class="txt_grisclaro11">*Campos Obligatorios</span></td>
+                    </tr>
+                </table></td>
+        </tr>
+        <tr>
+            <td height="103" align="center" bgcolor="#f1f1f1"><table width="100%" border="0" cellspacing="0" cellpadding="5">
+                    <tr>
+                        <td height="29" align="left" class="txt_gris12_bold">Categoria</td>
+                        <td align="left"><span class="txt_grisclaro12">
+                               {{ form_widget(form.categoria) }}
+                            </span><span class="txt_gris12_bold">*</span></td>
+                        <td align="left"><table style="display:none" width="133" border="0" align="right" cellpadding="3" cellspacing="0">
+                                <tr>
+                                    <td width="13"><img src="{{ asset('images/icono_agregar.png') }}" alt="" width="12" height="12" /></td>
+                                    <td width="108"><a href="#" class="txt_negro12_bold"> Agregar Categor&iacute;a</a></td>
+                                </tr>
+                            </table>
+                            <span class="txt_rojo16"></span></td>
+                    </tr>
+                    <tr>
+                        <td width="17%" height="29" align="left" class="txt_gris12_bold">Subcategoría</td>
+                        <td width="53%" align="left">
+                            {{ form_widget(form.subcategoria) }}
+                            <span class="txt_gris12_bold">*</span></td>
+                        <td width="30%" align="left"><table style="display:none" width="160" border="0" align="right" cellpadding="3" cellspacing="0">
+                                <tr>
+                                    <td width="13"><img src="{{ asset('images/icono_agregar.png') }}" alt="" width="12" height="12" /></td>
+                                    <td width="108"><a href="#" class="txt_negro12_bold"> Agregar Subcategor&iacute;a</a></td>
+                                </tr>
+                            </table>
+                            <span class="txt_rojo16"></span></td>
+                    </tr>
+                    <tr>
+                        <td height="29" align="left" class="txt_gris12_bold">Nombre del producto</td>
+                        <td align="left">{{ form_widget(form.nombre) }}
+                            <span class="txt_gris12_bold">*</span></td>
+                        <td align="left">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td height="29" align="left" class="txt_gris12_bold">Descripci&oacute;n</td>
+                        <td align="left">{{ form_widget(form.descripcion) }}
+                            <span class="txt_gris12_bold">*</span></td>
+                        <td align="left">&nbsp;</td>
+                    </tr>
+                    <tr {% if categoria is null or categoria.nombre != 'Pizzas' %} style="display:none" {% endif %}>
+                        <td height="29" align="left" class="txt_gris12_bold">Precio Grande</td>
+                        <td align="left">{{ form_widget(form.precio_pizza_grande) }}
+                            <span class="txt_gris12_bold">*</span></td>
+                        <td align="left">&nbsp;</td>
+                    </tr>
+                    <tr {% if categoria is null or categoria.nombre != 'Pizzas' %} style="display:none" {% endif %}>
+                        <td height="29" align="left" class="txt_gris12_bold">Precio Chica</td>
+                        <td align="left">{{ form_widget(form.precio_pizza_chica) }}
+                            <span class="txt_gris12_bold">*</span></td>
+                        <td align="left">&nbsp;</td>
+                    </tr>
+                    <tr {% if categoria is not null and categoria.nombre == 'Pizzas' %} style="display:none" {% endif %}>
+                        <td height="29" align="left" class="txt_gris12_bold">Precio</td>
+                        <td align="left">{{ form_widget(form.precio) }}
+                            <span class="txt_gris12_bold">*</span></td>
+                        <td align="left">&nbsp;</td>
+                    </tr>                   
+
+                </table>
+                <br />
+                <p><span class="txt_gris12_bold">Los precios deben ser cargados con punto para los decimales ej. $77.66 </span></p></td>
+        </tr>
+    </table>
+    <br />
+    <table width="233" height="36" border="0" align="center" cellspacing="3">
+        <tr>
+            <td width="225" align="center"><div class="btnseccionesact"> <a href="" class="enviar">Guardar producto</a></div></td>
+        </tr>
+    </table>
+</div>
+{{ form_errors(form) }}
+{{ form_rest(form) }}
+</form>
+{% endblock %}

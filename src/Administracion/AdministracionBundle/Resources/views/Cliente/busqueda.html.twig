@@ -1,0 +1,36 @@
+   
+{% for cliente in clientes %}  
+   {% set tel = cliente.primerTelefono %}
+   {% set doms = cliente.domicilios %}
+   <table width="100%" border="0" cellpadding="5" cellspacing="0" class="btn_rojo12_bold">
+       <tr>
+           <td align="left" width="70%"><span class="txt_negro16">{{ cliente.apellido }}, {{ cliente.nombre }}</span><br />
+               {% for dom in doms %}
+                <span class="txt_gris12">{% if tel is not null%} ({{ tel.codigo }}) {{ tel.numero }} {% if tel.celular is not null %}/ {{ tel.celular }} {% endif%}{% endif %} / {% if dom is not null%} {{ dom.calle }} {% endif%} </span><a href="{{ path('administracion_cliente_editar', {'id': cliente.id})}}"><img src="{{ asset('images/icono_editar.png') }}" width="16" height="16" /></a><a href="{{ path('administracion_cliente_editar', {'id': cliente.id})}}"></a><br>
+              {% endfor %} 
+        </td>        
+            {% if not is_granted('ROLE_ADMINISTRADOR') %}{% if app.session.get('comanda_id') is null %}
+                <td align="right" valign="bottom">
+                    <table>
+                        {% for dom in doms %}
+                            <tr>
+                                <td height="25px;" valign="bottom"><a href="{{ path('administracion_comanda_iniciar', { 'cliente_id': cliente.id, 'domicilio_id' : dom.id }) }}">Iniciar comanda &raquo;</a></td>
+                            </tr>                            
+                        {% endfor %}
+                    </table>
+                    
+                </td>
+                {% endif %}
+            {% endif %}
+        
+
+       </tr>
+   </table>
+{% else %}
+   <table width="100%" border="0" cellpadding="5" cellspacing="0" class="btn_rojo12_bold">
+       <tr>
+           <td align="left"><span class="txt_rojo12">No se encontraron resultados</span> </td>              
+       </tr>
+   </table>
+
+{% endfor %}

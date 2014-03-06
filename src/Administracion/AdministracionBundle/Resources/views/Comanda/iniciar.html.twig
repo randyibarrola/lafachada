@@ -1,0 +1,24 @@
+{% extends '::administracion.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/categorias.js') }}" type="text/javascript"></script> 
+{% endblock %}
+{% block content %}
+
+<div id="menu">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td height="48" align="center" class="txt_negro16">Men&uacute;</td>
+    </tr>
+</table>
+ {% for categoria in categorias %}
+  {% if categoria.nombre != "Adicionales/Recargos" and categoria.nombre != "Fainá" %}  
+    <div class="btnmenu"> <a href="{% if categoria.nombre == "Pizzas" %}{{ path('administracion_comanda_pizzas') }}{% else %}{{ path('administracion_comanda_orden')}}{% endif %}" data-categoria="{{ categoria.id }}" class="btnmenu categoria_menu">{{ categoria.nombre }}</a></div>
+    <br />
+  {% endif %}  
+ {% endfor %} 
+</div>
+<div id="contenidocentro">
+
+</div>
+{% endblock %}

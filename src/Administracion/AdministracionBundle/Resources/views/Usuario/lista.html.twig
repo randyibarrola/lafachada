@@ -1,0 +1,52 @@
+{% extends '::administracion.html.twig' %}
+
+{% block content %}
+{% set roles = { 'ROLE_ADMINISTRADOR': 'ADMINISTRADOR', 'ROLE_GERENTE': 'GERENTE', 'ROLE_GENERAL': 'GENERAL' } %}
+
+<div id="contenidogeneraladmin">
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+        <tr>
+            <td height="26" align="left" class="txt_grisclaro12"><table width="140" border="0" align="right" cellpadding="3" cellspacing="0">
+                    <tr>
+                        <td width="13"><img src="{{ asset('images/icono_agregar.png') }}" alt="" width="12" height="12" /></td>
+                        <td width="108"><a href="{{ path('administracion_usuario_editar' , {'id': 0}) }}" class="txt_negro12_bold"> Agregar Usuario</a></td>
+                    </tr>
+                </table></td>
+        </tr>
+    </table>
+    <table width="100%" border="0" cellpadding="3" cellspacing="0">
+        <tr>
+            <td height="40" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12">Sucursal<br />
+                
+            <a href="{{ path('administracion_usuario') }}" class="txt_negro16"><span class="{% if not app.request.query.get('sucursal') %} txt_rojo16 {% else %} txt_negro16 {% endif %}">Todas</span></a><span class="txt_negro16"> {% for sucursal in sucursales%} . <a href="{{ path('administracion_usuario', {'sucursal': sucursal.nombre}) }}" class="{% if app.request.query.get('sucursal') != sucursal.nombre %} txt_negro16 {% else %} txt_rojo16 {% endif %}">{{ sucursal.nombre }}</a> {% endfor%}</span><br /></td>
+        </tr>
+    </table>        
+    <table id="dataTable" width="100%" border="0" cellspacing="0" cellpadding="3" class="display">
+        <thead>
+            <tr>
+                <th width="20%" height="26" align="center" bgcolor="#CCCCCC" class="txt_blanco12_bold">Usuario</th>                
+                <th width="18%" align="center" bgcolor="#CCCCCC" class="txt_blanco12_bold">Permiso</th>
+                <th width="26%" align="center" bgcolor="#CCCCCC" class="txt_blanco12_bold">Sucursal</th>
+                <th width="4%" align="center" bgcolor="#CCCCCC" >&nbsp;</th>
+                <th width="4%" align="center" bgcolor="#CCCCCC" >&nbsp;</th>
+                <th width="4%" align="center" bgcolor="#CCCCCC" >&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td height="47" align="center" class="bordeabajo"><span class="txt_gris12_bold"><strong>{{ usuario.username}}</strong></span><span class="txt_rojo16"></span></td>
+                <td align="center" class="bordeabajo"><span class="txt_gris12">{{ roles[usuario.getUsuarioRolesString()]}}</span></td>
+                <td align="center" class="bordeabajo"><span class="txt_gris12">{{ usuario.sucursal is not null ? usuario.sucursal : 'Todas' }}</span></td>
+                <td align="center" class="bordeabajo"><a href="{{ path('administracion_historial', {'usuario_id': usuario.id }) }}"><img src="{{ asset('images/icono_historial.png') }}" width="16" height="16" onclick="MM_showHideLayers('mapa', '', 'show')" /></a></td>
+                <td align="right" class="bordeabajo"><a href="{{ path('administracion_usuario_editar' , {'id': usuario.id}) }}"><img src="{{ asset('images/icono_editar.png') }}" width="16" height="16" onclick="MM_showHideLayers('mapa', '', 'show')" /></a></td>
+                <td align="center" class="bordeabajo"><a href="{{ path('administracion_usuario_eliminar' , {'id': usuario.id}) }}"><img src="{{ asset('images/icono_eliminar_rojo.png') }}" width="16" height="16" /></a></td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>        
+    </table>
+    
+</div>
+
+{% endblock %}

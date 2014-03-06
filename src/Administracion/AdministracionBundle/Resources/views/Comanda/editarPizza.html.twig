@@ -1,0 +1,210 @@
+{% extends '::administracion.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+<script src="{{ asset('js/comanda.js') }}" type="text/javascript"></script> 
+<script> 
+    var urlCompletarPizzas = '{{ path('administracion_comanda_pizzas_completar') }}'; 
+    var cantidadPorcion = {{ orden.cantidadPorciones }};    
+</script>
+{% endblock %}
+{% block content %}
+<div id="menu">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td height="48" align="center" class="txt_negro16">Men&uacute;</td>
+        </tr>
+    </table>
+ {% for categoria in categorias %}
+    <div class="{% if categoria.id == orden.categoria.id %}btnmenuactivo {% else %} btnmenu{% endif %}"> <a href="#" data-categoria="{{ categoria.id }}" class="btnmenu">{{ categoria.nombre }}</a></div>
+    <br />
+ {% endfor %} 
+</div>
+ {% set categoria = orden.categoria %}
+<div id="contenidocentro">
+    <form class="formulario" action="{{ path('administracion_comanda_pizzas_agregar') }}" method="post">
+        <input type="hidden" id="tipo_pizza" name="tipo_pizza" value="1" />
+        <input type="hidden" id="cliente_id" name="cliente_id" value="{{ app.session.get('cliente_id') }}" />
+        <input type="hidden" id="comanda_id" name="comanda_id" value="{{ comanda.id }}" />
+        <input type="hidden" id="orden_id" name="orden_id" value="{{ orden.id }}" />        
+        <input type="hidden" id="accion" name="accion" value="editar" />
+        <input type="hidden" id="estado" name="estado" value="{{ estado }}" />        
+        <link href="{{ asset('css/estilos.css') }}" rel="stylesheet" type="text/css">
+        <span class="txt_rojo12_bold">Pizzas &gt;</span><span class="txt_gris12_bold"> Seleccione tama&ntilde;o de pizza</span><br />
+        <br />
+        <table width="273" height="36" border="0" cellspacing="3">
+            <tr>
+                <td width="131" align="center" bgcolor="{{ orden.tipoPizza == 1 ? '#afafaf' : '#f1f1f1' }}"  ><a href="#"  class="txt_negro12_bold pizza_grande">Grande</a></td>
+                <td width="129" align="center" bgcolor="{{ orden.tipoPizza == 2 ? '#afafaf' : '#f1f1f1' }}"><a href="#" class="txt_negro12_bold pizza_chica">Chica</a></td>
+            </tr>
+        </table>
+        <img src="{{ asset('images/linea_hor_gris.jpg') }}" width="700" height="2" /><br />
+        <br />
+        <span class="txt_rojo12_bold">  Pizzas &gt; </span><span class="txt_gris12_bold">Seleccione porciones </span><br />
+        <br />
+        <table width="100%" height="36" border="0" cellspacing="3">
+            <tr>
+                <td width="131" align="center" valign="top"><a href="#" class="txt_gris12 porcion_pizza ambos" data-porcion="1" ><img class="{% if orden.cantidadPorciones == 1 %} hidden {% endif%} imagen_porcion_1" src="{{ asset('images/icono_pizza_entera.png') }}" name="Image11" width="71" height="72" border="0" id="imagen_porcion_1" /><img class="imagen_porcion_1 {% if orden.cantidadPorciones != 1 %}hidden{% endif %}" src="{{ asset('images/icono_pizza_entera_over.png') }}" name="Image11" width="71" height="72" border="0" id="imagen_porcion_1_over" /></a><br />
+                    <br />
+                    <a href="" class="porcion_pizza entera ambos txt_gris12" data-porcion="1"><span class="txt_negro12">Pizza entera</span></a>
+                    <span id="pizza_entera" {% if orden.cantidadPorciones != 1 %}style="display:none"{% endif %}>
+                        <br />
+                        <br />
+                        <input name="unidades_pizza_entera" type="text" class="txt_gris12_listado" value="{{ orden.unidades }}" id="textfield6" size="2" /> 
+                    </span><span class="txt_grisclaro11">Unid. </span></span>
+                </td>
+                <td width="129" align="center" valign="top"><a href="#"  class="txt_gris12 porcion_pizza  ambos" data-porcion="2"  ><img class="imagen_porcion_2 {% if orden.cantidadPorciones == 2 %} hidden {% endif%}" src="{{ asset('images/icono_pizza_mitad.png') }}" name="Image15" width="71" height="72" border="0" id="imagen_porcion_2" /><img class="{% if orden.cantidadPorciones != 2 %} hidden {% endif%} imagen_porcion_2" src="{{ asset('images/icono_pizza_mitad_over.png') }}" name="Image15" width="71" height="72" border="0" id="imagen_porcion_2_over" /></a><br />
+                    <br />
+                    <a href="" class="porcion_pizza ambos txt_gris12" data-porcion="2"><span class="txt_negro12">Pizza mitad / mitad</span></a></td>
+                <td width="129" align="center" valign="top" ><a href="#"  class="txt_gris12 porcion_pizza  para_grande" data-porcion="3"><img class="imagen_porcion_3 {% if orden.cantidadPorciones == 3 %} hidden {% endif%}" src="{{ asset('images/icono_pizza_media_cuarto.png') }}" name="Image16" width="71" height="72" border="0" id="imagen_porcion_3" /><img class="imagen_porcion_3 {% if orden.cantidadPorciones != 3 %} hidden {% endif%}" src="{{ asset('images/icono_pizza_media_cuarto_over.png') }}" name="Image16" width="71" height="72" border="0" id="imagen_porcion_3_over" /></a><br />
+                    <br />
+                    <a href="" class="porcion_pizza para_grande txt_gris12" data-porcion="3" ><span class="txt_negro12 para_grande">Pizza mitad / 2 cuartos</span></a></td>
+                <td width="129" align="center" valign="top" ><a href="#" class="para_grande porcion_pizza txt_gris12" data-porcion="4" ><img class="imagen_porcion_4 {% if orden.cantidadPorciones == 4 %} hidden {% endif%}" src="{{ asset('images/icono_pizza_cuartos.png') }}" name="Image14" width="71" height="72" border="0" id="imagen_porcion_4" /><img class="imagen_porcion_4 {% if orden.cantidadPorciones != 4 %} hidden {% endif%}" src="{{ asset('images/icono_pizza_cuartos_over.png') }}" name="Image14" width="71" height="72" border="0" id="imagen_porcion_4_over" /></a><br />
+                    <br />
+                    <a href="" class="porcion_pizza para_grande txt_gris12" data-porcion="4"><span class="txt_negro12 para_grande">Pizza 4 cuartos</span></a></td>
+            </tr>
+        </table>
+        <br />
+        <div id="completar_pizzas">
+            
+            <input type="hidden" name="porciones" value="{{ porcion }}" />
+            {% set subcategorias = categoria.subcategorias %}
+            {% for i in 1..porcion %}
+                {% set detalle = orden.detalleSegunPorcion(loop.index) %}
+                    <img src="{{ asset('images/linea_hor_gris.jpg') }}" width="700" height="2" /><br />
+                    <br />
+                    <span class="txt_rojo12_bold">Porci&oacute;n {{ letras[i] }} &gt;</span><span class="txt_gris12_bold">Seleccione gusto </span><br />
+                    {% if subcategorias | length > 0 %}
+                    <table width="100%" height="" border="0" cellspacing="3">
+                      {% set cantidadTd = 0 %}          
+                      {% for subcategoria in subcategorias %} 
+                        {% if loop.index == 1 or (loop.index - 1) is divisibleby(3)  %}
+                        {% set cantidadTd = cantidadTd + 1 %}             
+                        <tr>
+                        {% endif %}
+                          <td valign="top" width="130" height="31" align="left" class="txt_negro16_bold">
+                              <table width="100%">
+                                  <tr><td valign="top" class="txt_negro16_bold">{{ subcategoria }}</td></tr>
+                              </table>                
+                            {% set productos = subcategoria.productosOrdenados %}                
+                             <table width="100%" class="txt_gris12">
+                                  {% for producto in productos%}  
+                                    <tr>
+                                        <td class="txt_negro16_bold" align="left" valign="top">
+                                            <span class="txt_gris12" >
+                                                <input {% if producto.id == detalle.producto.id %}checked="checked"{% endif %} type="radio" name="producto_{{ i }}[]" id="producto_{{ producto.id }}" value="{{ producto.id }}" />
+                                                <a href="#" title="{{ producto.textoDescriptivo }}" class="txt_gris12_listado">{{ producto.nombre }}</a><br />
+                                            </span>
+                                        </td>
+                                    </tr>
+                                  {% endfor %}
+                              </table>
+                            </td>  
+                        {% if loop.index is divisibleby(3) and loop.index  > 0 %}
+                        {% set cantidadTd = 0%}
+                        </tr> 
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+              {% endfor %}
+              <br />
+              <img src="{{ asset('images/linea_hor_gris.jpg') }}" width="700" height="2" /><br />
+              <br />
+              {% if categoriaAdicionales is not null %}
+              {% set subcategorias = categoriaAdicionales.subcategorias  %} 
+                <span class="txt_rojo12_bold">Pizzas &gt; </span><span class="txt_gris12_bold">Adicionales / Recargo</span><br />
+                <table width="100%" height="73" border="0" cellspacing="3">
+                  <tr>
+                    <td width="182" height="67" align="left" valign="top">
+                        <table width="153" border="0" cellspacing="0" cellpadding="4">
+                            {% for subcategoria in subcategorias %}
+                                {% set productos = subcategoria.productos %}  
+                                {% for producto in productos %}
+                                    <tr>
+                                      <td width="20" valign="middle" class="txt_gris12"><input name="adicional_producto[]" value="{{ producto.id }}" type="hidden" /><input {% if producto.id in productosRecargo %} checked="checked" {% endif %} value="1" type="checkbox" name="adicional_producto_{{ producto.id}}" id="checkbox8" /></td>
+                                      <td width="117" valign="middle" class="txt_gris12"><a href="#" title="{{ producto.textoDescriptivo }}" class="txt_gris12_listado">{{ producto.nombre }}</a></td>
+                                    </tr>
+                                 {% endfor %}
+                            {% endfor %}
+                         </table>
+                     </td>
+                    <td width="254" align="left" valign="top">
+                        <table width="324" border="0" cellspacing="0" cellpadding="4">
+                          <tr>
+                            <td width="20" valign="middle" class="txt_gris12"><input type="checkbox" value="1" name="nuevo_recargo" id="nuevo_recargo" /></td>
+                            <td width="108" valign="middle" class="txt_gris12"><input name="nombre_recargo" type="text" class="txt_gris12_listado" id="textfield4" size="20" /></td>
+                            <td width="10" valign="middle" class="txt_gris12"><span class="txt_negro12_bold">$</span></td>
+                            <td width="154" valign="middle" class="txt_gris12"><input name="precio_recargo" type="text" class="txt_gris12_listado" id="textfield5" size="6" /></td>                
+                          </tr>
+                          <tr>
+                            <td height="26" valign="top" class="txt_gris12">&nbsp;</td>
+                            <td valign="top" class="txt_grisclaro11">Nuevo Recargo</td>
+                            <td valign="top" class="txt_grisclaro11">&nbsp;</td>
+                            <td valign="top" class="txt_grisclaro11">Precio</td>
+                          </tr>
+                        </table>
+                    </td>
+                    <td width="246" align="left" valign="top">&nbsp;</td>
+                  </tr>
+                </table>
+              {% endif %}
+              <br />
+              <img src="{{ asset('images/linea_hor_gris.jpg') }}" width="700" height="2" /><br />
+              <br />
+              <span class="txt_rojo12_bold"> Pizzas &gt; </span><span class="txt_gris12_bold">Comentario del Cliente</span><br />
+              <br />
+              <textarea name="comentarios" cols="120" rows="3" class="txt_gris12" id="comentarios">{{ orden.comentario }}</textarea>
+              <br />
+              <br />
+              {% if categoriaFaina is not null %}
+              <table width="100%" height="36" border="0" cellspacing="3">
+                {% set subcategorias = categoriaFaina.subcategorias  %} 
+                {% set x = 0 %}
+                {% for subcategoria in subcategorias %}
+                    {% set productos = subcategoria.productosOrdenados %}  
+                    {% for producto in productos %}
+                        {% set x = x + 1 %}
+                       {% if x is odd %}
+                        <tr>
+                       {% endif %} 
+                          <td width="344" align="center" {% if x is odd %} bgcolor="#666666" {% else%} bgcolor="#AFAFAF" {% endif %}>
+                            <span class="txt_blanco12_bold">{{ producto.nombre }}</span>
+                            <input name="faina_producto[]" value="{{ producto.id }}" type="hidden" />
+                            <input value="{% if cantidadesFaina[producto.id] is defined %} {{ cantidadesFaina[producto.id] }}{% endif %}" name="faina_producto_{{ producto.id}}" type="text" class="txt_gris12 validate[integer]" id="textfield2" size="3" />
+                            <span class="txt_grisclaro12">&nbsp;&nbsp;</span><span class="txt_blanco12">Cantidad de porciones</span>
+                          </td>                          
+                        {% if x is not odd %}
+                        </tr>
+                        {%endif%}
+                    {% endfor %}
+                {% endfor %}
+              </table>
+              {% endif %}
+              <p><img src="{{ asset('images/linea_hor_gris.jpg') }}" alt="" width="700" height="2" /><br />
+              </p>
+              <table width="100%" border="0" cellspacing="0" cellpadding="3">
+                <tr>
+                  <td align="center"><div class="btnfondorojo"> <a href="#" class="enviar_comanda_edicion" > Agregar a comanda</a></div></td>
+                </tr>
+              </table>            
+            
+        </div>    
+    </form>
+</div>
+  <script>
+  
+    $('.enviar_comanda_edicion').click(function(e) {  
+            e.preventDefault();
+            if(validarPorciones()) {
+                if($('.formulario').validationEngine('validate') == true){
+                    $('.formulario').submit();
+                }  
+            } else {
+                alert('DEBE SELECCIONAR LOS GUSTOS PARA TODAS LAS PORCIONES DE PIZZA');
+                return false;
+            }  
+        
+    });  
+ 
+</script>
+{% endblock %}

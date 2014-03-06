@@ -1,0 +1,52 @@
+{% extends '::administracion.html.twig' %}
+
+{% block content %}
+<div id="contenidogeneraladmin"> 
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+        <tr>
+            <td height="26" align="left" class="txt_grisclaro12">
+                <table width="140" border="0" align="right" cellpadding="3" cellspacing="0">
+                    <tr>
+                        <td width="13"></td>
+                        <td width="108"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table width="100%" border="0" cellpadding="3" cellspacing="0">
+        <tr>
+            <td height="40" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12">Sucursal<br />
+                
+                <a href="{{ path('administracion_historial') }}" class="txt_negro16"><span class="{% if not app.request.query.get('sucursal')  %}txt_rojo16 {% else %} txt_negro16 {% endif %}">Todas</span></a><span class="txt_negro16">{% for sucursal in sucursales%} . <a href="{{ path('administracion_historial', {'sucursal': sucursal.nombre}) }}" class="{% if app.request.query.get('sucursal') != sucursal.nombre %} txt_negro16 {% else %} txt_rojo16 {% endif %}">{{ sucursal.nombre }}</a> {% endfor%}</span><br /></td>
+        </tr>
+    </table>
+   <table id="dataTableOculto" width="100%" border="0" cellspacing="0" cellpadding="3" class="display">
+       <thead>
+        <tr>
+             <th width="20%" align="center" bgcolor="#CCCCCC"><span class="txt_blanco12_bold">ID</span></th>
+             <th width="20%" align="center" bgcolor="#CCCCCC"><span class="txt_blanco12_bold">Fecha</span></th>
+             <th width="20%" align="center" bgcolor="#CCCCCC"><span class="txt_blanco12_bold">Horario</span></th>
+             <th width="20%" align="center" bgcolor="#CCCCCC"><span class="txt_blanco12_bold">Usuario</span></th>
+             <th width="40%" align="center" bgcolor="#CCCCCC"><span class="txt_blanco12_bold">Proceso</span></th>
+            
+         </tr>
+       </thead> 
+       <tbody>
+           {% for historial in historiales %}
+            <tr>
+                <td align="center" class="bordeabajo">{{ historial.id }}</td>
+                <td align="center" class="bordeabajo"><span class="txt_gris12_bold"><strong>{{ historial.createdAt|date('d.m.Y') }}</strong></span><span class="txt_rojo16"></span></td>
+                <td align="center" class="bordeabajo"><span class="txt_gris12">{{ historial.createdAt|date('H:i') }}</span></td>
+                <td height="47" align="center" class="bordeabajo"><span class="txt_gris12">{{ historial.usuario.username }}</span></td>
+                <td align="center" class="bordeabajo"><span class="txt_gris12">{{ historial.proceso }}</span></td>               
+            </tr> 
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <br />
+</div>
+
+{% endblock %}
+

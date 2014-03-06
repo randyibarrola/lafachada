@@ -1,0 +1,17 @@
+<table width="100%" border="0" align="left" cellpadding="0" cellspacing="0">
+    <tr>
+
+        <td width="111"><div class="btnsecciones"> <a class="menu_superior" data-path="/delivery/cliente" href="{{ path('administracion_cliente') }}">Clientes</a></div></td>
+
+
+        <td width="125"><div class="btnsecciones"> <a class="menu_superior" data-path="/delivery/comanda" href="{{ path('administracion_comanda') }}">Comandas</a></div></td>
+
+        <td width="95"><div class="btnsecciones"> <a class="menu_superior" data-path="/delivery/menu" href="{{ path('administracion_menu') }}">Men&uacute;</a></div></td>
+
+        <td width="137" ><div class="btnsecciones" {% if not is_granted('ROLE_ADMINISTRADOR') and not is_granted('ROLE_GERENTE')  %} style="display:none;" {% endif %}> <a class="menu_superior" data-path="/delivery/repartidor" href="{{ path('administracion_repartidor') }}">Repartidores</a></div></td>
+        <td width="114"><div class="btnsecciones" {% if not is_granted('ROLE_ADMINISTRADOR') %} style="display:none;" {% endif %}> <a class="menu_superior" data-path="/delivery/usuario" href="{{ path('administracion_usuario') }}">Usuarios</a></div></td>
+        <td width="129"><span class="btnsecciones" {% if not is_granted('ROLE_ADMINISTRADOR') %} style="display:none;" {% endif %}> <a class="menu_superior" data-path="/delivery/sucursal" href="{{ path('administracion_sucursal') }}">Sucursales</a></span></td>
+        <td width="199"><span class="btnsecciones" {% if not is_granted('ROLE_ADMINISTRADOR') %} style="display:none;" {% endif %}> <a class="menu_superior" data-path="/delivery/historial" href="{{ path('administracion_historial') }}">Historial de eventos</a></span></td>
+
+    </tr>
+</table>

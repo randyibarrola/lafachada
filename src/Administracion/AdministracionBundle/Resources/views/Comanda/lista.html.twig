@@ -1,0 +1,119 @@
+{% extends '::administracion.html.twig' %}
+
+{% block content %}
+
+<div id="contenidogeneraladmin">
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+        <tr>
+            <td height="26" align="right" class="txt_grisclaro12">{#<span class="txt_grisclaro11">Cantidad total: </span><span class="txt_grisclaro12_bold">40 Comandas</span>#}</td>
+        </tr>
+    </table>  
+    {% if is_granted('ROLE_ADMINISTRADOR') %}
+    <table width="100%" border="0" cellpadding="3" cellspacing="0">
+        <tr>
+            <td height="40" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12">Sucursal<br />
+                {% if is_granted('ROLE_ADMINISTRADOR') %}
+                    <span ><a class="{% if sucursal is null %}txt_rojo16 {% else %} txt_negro16 {%endif%}" href="{{ path('administracion_comanda', { 'ver': 'todas'} )  }}">Todas</a></span>
+                    <span class="txt_negro16 ">    
+                            {% for suc in sucursales %}
+                             . <a href="{{ path('administracion_comanda', { 'sucursal': suc.nombre} )  }}" class="{% if app.request.query.get('sucursal') != suc.nombre %} txt_negro16 {% else %} txt_rojo16 {% endif %}">{{ suc.nombre }}</a> 
+                        {% endfor %}
+                        <br />
+                    </span>
+                {% else %}
+                    <span class="txt_rojo16">{{ app.user.sucursal.nombre }}</span>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    {% endif %}    
+    {% if app.request.query.get('ver') != 'historial' %}
+    <table width="100%" border="0" cellpadding="3" cellspacing="0">
+        <tr></tr>
+        <tr>
+            <td height="40" align="left" bgcolor="#CCCCCC" class="txt_grisclaro12"><span class="txt_negro16">{{ "now"| localizeddate('full', 'none') }}</span></td>
+        </tr>
+    </table>
+    {% endif %}
+    <table id="dataTableOculto" class="display" width="100%" border="0" cellspacing="0" cellpadding="3">
+        <thead>
+            <tr>
+                <th width="12%" height="26" align="center" bgcolor="#AFAFAF" class="txt_blanco12_bold">ID</td>                
+                <th width="12%" height="26" align="center" bgcolor="#AFAFAF" class="txt_blanco12_bold">Comanda</td>
+                <th width="24%" align="center" bgcolor="#AFAFAF" class="bordeabajo"><span class="txt_blanco12_bold">Domicilio</span></th>
+                {% if app.request.query.get('ver') == 'historial' %}
+                    <th width="24%" align="center" bgcolor="#AFAFAF" class="bordeabajo"><span class="txt_blanco12_bold">Fecha</span></th>
+                {% endif %}
+                <th width="15%" align="center" bgcolor="#AFAFAF" class="bordeabajo"><span class="txt_blanco12_bold">Hora</span></th>
+                <th width="19%" align="center" bgcolor="#AFAFAF" class="bordeabajo"><span class="txt_blanco12_bold">Estado</span></th>
+                <th width="15%" align="center" bgcolor="#AFAFAF" class="bordeabajo"><span class="txt_blanco12_bold">Repartidor</span></th>
+                <th width="6%" align="center" bgcolor="#AFAFAF" class="bordeabajo"><span class="txt_blanco12_bold">Enviado</span></th>
+                <th width="3%" align="center" bgcolor="#AFAFAF" class="bordeabajo">&nbsp;</th>
+                <th width="3%" align="center" bgcolor="#AFAFAF" class="bordeabajo">&nbsp;</th>
+                <th width="3%" align="center" bgcolor="#AFAFAF" class="bordeabajo">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for comanda in comandas %}
+            {% set cliente = comanda.cliente  %}
+            {% set tel = cliente.primerTelefono %}
+            {% set dom = comanda.domicilio %}
+
+        
+            <tr {% if comanda.estado == 4 %}style="background-color: #FFCACD;"{% endif %}>
+                <td>{{ comanda.id}}</td>
+                <td  height="47" align="left" class="bordeabajo"><span class="txt_gris12_bold"><strong>{{ comanda.codigo  }}</strong></span><span class="txt_rojo16"></span></td>
+                <td align="left" class="bordeabajo"><span class="txt_rojo16">{% if dom is not null%} {{ dom.calle }} {% endif%}<br />
+                    </span><span class="txt_gris12">{% if dom is not null%}  Piso {{ dom.piso }} Dpto {{ dom.departamento }} {% endif %}</span></td>
+                {% if app.request.query.get('ver') == 'historial' %}
+                    <td align="center" class="bordeabajo"><span class="txt_gris12">{{ comanda.fecha |date('d.m.Y')  }}</span></td>
+                {% endif %}
+                <td align="center" class="bordeabajo"><span class="txt_gris12">{{ comanda.hora |date('Hi')  }}</span></td>
+                <td align="center" class="bordeabajo"><span class="txt_gris12" id="estado_{{ comanda.id }}">{{ estados[comanda.estado] }}</span></td>
+                <td align="center" class="bordeabajo">
+                    {% if comanda.estado != 6 %}
+                    <span class="txt_gris12">
+                        <select {% if comanda.estado == 3 or comanda.estado == 5 %} disabled="disabled" {% endif %} name="comanda_{{ comanda.id }}" id="repartidor_lista_{{ comanda.id }}">
+                            <option value="0">Seleccione</option>
+                            {% set reptds = repartidores[comanda.sucursal.id] %} 
+                            {% for r in reptds %}
+                                <option value="{{ r.id }}" {% if comanda.repartidor is not null and comanda.repartidor.id == r.id %} selected="selected"{% endif %}>{{ r.nombre }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </span>
+                    {% endif %}
+                </td>
+                <td align="center" class="bordeabajo">{% if comanda.estado != 6 %}<input {% if comanda.estado == 3 or  comanda.estado == 5%} disabled="disabled" checked="checked" {% endif %} type="checkbox" data-url="{{ path('administracion_comanda_enviar_menu', { 'comanda_id':comanda.id }) }}" data-comanda="{{ comanda.id }}" data-comodin="lista" class="enviar_comanda" name="checkbox5" id="checkbox8" />{% endif %}</td>
+                <td align="right" class="bordeabajo"><a href="{{ path('administracion_comanda_editar', { 'id' : comanda.id }) }}"><img src="{{ asset('images/icono_ver.png' )}}" width="16" height="16" /></a></td>
+                <td align="right" class="bordeabajo"><a href="" ><img data-lat="{{ cliente.getPrimeraLatitud()  }}" data-lon="{{ cliente.getPrimeraLongitud()  }}" src="{{ asset('images/icono_mapa.png' )}}" class="mapa_cliente" width="16" height="16"  /></a></td>
+                <td align="right" class="bordeabajo">{% if comanda.estado != 6 %}<a href="{{ path('administracion_comanda_cancelar_menu', { 'comanda_id': comanda.id ,'accion':'listado'}) }}"><img src="{{ asset('images/icono_eliminar_rojo.png' )}}" width="16" height="16" /></a>{% endif %}</td>
+            </tr>
+       
+        {% endfor %}     
+        </tbody>
+       
+    </table>
+    <br />
+    <br />
+    {% if is_granted('ROLE_ADMINISTRADOR') %}
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+        <tr>
+            <td height="26" align="right" class="txt_grisclaro12"><span class="txt_grisclaro12_bold"><a href="{{ path('administracion_comanda', { 'ver': 'historial'}) }}" class="txt_grisclaro12_bold">Ver historial de comandas &gt; </a></span></td>
+        </tr>
+    </table>
+    {% endif %}
+</div>
+
+<div id="mapa">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tabla_mapa">
+    <tr>
+      <td height="25" align="right"><a href="#" class="cerrar_mapa"><img src="{{ asset('images/icono_eliminar.png') }}" width="11" height="11" /></a></td>
+    </tr>
+  </table>
+{#<iframe class="iframe" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com.ar/maps?f=q&amp;source=s_q&amp;hl=es&amp;geocode=&amp;z=15&amp;output=embed&amp;ll=40.40429790000000000,-3.73902247724606700"></iframe><br /><small><a href="https://maps.google.com.ar/maps?f=q&amp;source=embed&amp;hl=es&amp;geocode=&amp;q=sta+maria+de+oro+2431+palermo&amp;aq=&amp;sll=-34.596172,-58.558303&amp;sspn=0.006845,0.015289&amp;g=sta+maria+de+oro+2431&amp;ie=UTF8&amp;hq=&amp;hnear=Fray+Justo+Santamar&iacute;a+de+Oro+2431,+Palermo,+Buenos+Aires&amp;ll=-34.58004,-58.42503&amp;spn=0.013692,0.030577&amp;t=m&amp;z=14" target="_blank" style="color:#0000FF;text-align:left"><br />
+<span class="txt_rojo12">Ver mapa más grande</span></a></small>#}
+</div>
+
+
+{% endblock %}

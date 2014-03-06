@@ -1,0 +1,100 @@
+{% if is_granted('ROLE_ADMINISTRADOR')  %}
+<table width="100%" border="0" cellspacing="0" cellpadding="3">
+    <tr>
+        <td colspan="2"><span class="txt_grisclaro12">Administración de Producto, Descripción y Precio</span></td>              
+    </tr>  
+    <tr>
+        <td colspan="2" height="10px"></td>              
+    </tr>   
+</table>
+{% endif %}
+{% for categoria in categorias %}
+{% set subcategorias = categoria.subcategorias %}
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+
+        <tr></tr>
+        <tr>
+            <td height="22" align="left" bgcolor="#CCCCCC" class="txt_grisclaro12"><span class="txt_rojo12_bold">{{ categoria }}</span><br /></td>
+            <td align="left" bgcolor="#CCCCCC" class="txt_grisclaro12">
+                {% if is_granted('ROLE_ADMINISTRADOR')  %}
+                <table width="340" border="0" align="right" cellpadding="3" cellspacing="0">
+                    <tr>
+                        <td width="13"><img src="{{ asset('images/icono_agregar.png') }}" alt="" width="12" height="12" /></td>
+                        <td width="108"><a href="{{ path('administracion_producto_editar', {'categoria': categoria.id, 'id':0}) }}" class="txt_negro12_bold"> Agregar Producto</a></td>                  
+                        <td width="13"><img src="{{ asset('images/icono_eliminar_rojo.png') }}" alt="" width="12" height="12" /></td>
+                        <td width="108"><a data-eliminar="CATEGORÍA {{ categoria|upper}}" href="{{ path('administracion_menu_eliminar_categoria', {'id': categoria.id}) }}" class="txt_negro12_bold precaucion"> Eliminar Categoria</a></td>
+                    </tr>
+                </table>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    {% if subcategorias | length > 0 %}
+    <table width="100%" height="" border="0" cellspacing="4">
+    {% set cantidadTd = 0 %}  
+    {% for subcategoria in subcategorias %}  
+        {% if loop.index == 1 or (loop.index - 1) is divisibleby(3)  %}
+        {% set cantidadTd = cantidadTd + 1 %}  
+        <tr>
+        {% endif %}
+                <td width="33%" height="31" align="left" valign="top">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="2">
+                        <tr bgcolor="#f1f1f1">
+                            <td height="31" align="left" class="txt_negro16_bold" >{{ subcategoria }}</td>
+                            {% if is_granted('ROLE_ADMINISTRADOR')  %}
+                            <td width="7%" height="31" align="center" class="txt_negro16_bold"><a title="Eliminar Subcategoria {{ subcategoria }}" href="{{ path('administracion_menu_eliminar_subcategoria', {'id':subcategoria.id }) }}" data-eliminar="SUBCATEGORÍA {{ subcategoria|upper}}" class="precaucion"><img title="Eliminar Subcategoria {{ subcategoria }}" src="{{ asset('images/icono_eliminar_rojo.png') }}"  /></a></td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="left" width="100%" valign="top">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="2">
+                            {% set productos = subcategoria.productosOrdenados %}
+                            {% for producto in productos%}
+                                    <tr>
+                                        <td width="50%"><span class="txt_gris12" ><a href="#" title="{{ producto.textoDescriptivo}}" class="txt_gris12">{{ producto.nombre }}</a><br />
+                                            </span></td>
+                                       
+                                        <td width="43%" align="right" class="txt_rojo16">
+                                            {{ producto.precioListado}}
+                                            {% if is_granted('ROLE_ADMINISTRADOR')  %}
+                                                    <a title="Editar Producto" href="{{ path('administracion_producto_editar', {'categoria': categoria.id, 'id':producto.id}) }}"><img src="{{ asset('images/icono_editar.png') }}" width="16" height="16" /></a>
+                                            {% endif %}
+                                        </td>
+                                         {% if is_granted('ROLE_ADMINISTRADOR')  %}
+                                        <td width="7%" align="center">
+                                                <a title="Eliminar producto" href="{{ path('administracion_producto_eliminar', {'categoria': categoria.id, 'id':producto.id}) }}" data-eliminar="PRODUCTO {{ producto.nombre|upper}}" class=""><img src="{{ asset('images/icono_eliminar.png') }}" width="16" height="16" /></a>
+                                        </td>
+                                        {% endif %}
+                                        </tr>
+                            {% endfor %}
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td> 
+            {% if loop.last and cantidadTd < 3 %}
+              {% for i in cantidadTd..3 %}
+                  <td width="283" style="" height="31" align="left" valign="top"></td>
+              {% endfor %}
+            {% endif %}
+          {% if loop.index is divisibleby(3) and loop.index  > 0 %}
+          {% set cantidadTd = 0%}
+          </tr>           
+          {% endif %}
+        {% endfor %}  
+
+      </table>
+      {% endif %}
+  {% endfor %}
+<script>
+$('.precaucion').click(function(e) {
+    e.preventDefault();  
+    var texto = $(this).data('eliminar');
+    if(confirm('¿ESTA SEGURO QUE QUIERE ELIMINAR LA '+ texto +'?' + "\n"+
+'Si usted procede se eliminarán todos los productos que se encuentran en la misma...')){ 
+   
+        location.href = $(this).attr('href');
+    }    
+    return false;
+}); 
+</script>

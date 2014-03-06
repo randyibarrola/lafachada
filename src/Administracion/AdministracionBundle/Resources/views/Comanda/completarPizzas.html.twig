@@ -1,0 +1,135 @@
+<input type="hidden" name="porciones" value="{{ porcion }}" />
+{% set subcategorias = categoria.subcategorias %}
+{% for i in 1..porcion %}
+        <img src="{{ asset('images/linea_hor_gris.jpg') }}" width="700" height="2" /><br />
+        <br />
+        <span class="txt_rojo12_bold">Porci&oacute;n {{ letras[i] }} &gt;</span><span class="txt_gris12_bold">Seleccione gusto </span><br />
+        {% if subcategorias | length > 0 %}
+        <table width="100%" height="" border="0" cellspacing="3">
+          {% set cantidadTd = 0 %}          
+          {% for subcategoria in subcategorias %} 
+            {% if loop.index == 1 or (loop.index - 1) is divisibleby(3)  %}
+            {% set cantidadTd = cantidadTd + 1 %}             
+            <tr>
+            {% endif %}
+              <td valign="top" width="130" height="31" align="left" class="txt_negro16_bold">
+                  <table width="100%">
+                      <tr><td valign="top" class="txt_negro16_bold">{{ subcategoria }}</td></tr>
+                  </table>                
+                {% set productos = subcategoria.productosOrdenados %}                
+                 <table width="100%" class="txt_gris12">
+                      {% for producto in productos%}  
+                        <tr>
+                            <td class="txt_negro16_bold" align="left" valign="top">
+                                <span class="txt_gris12" >
+                                    <input type="radio" name="producto_{{ i }}[]" id="producto_{{ producto.id }}" value="{{ producto.id }}" />
+                                    <a href="#" title="{{ producto.textoDescriptivo }}" class="txt_gris12_listado">{{ producto.nombre }}</a><br />
+                                </span>
+                            </td>
+                        </tr>
+                      {% endfor %}
+                  </table>
+                </td>  
+            {% if loop.index is divisibleby(3) and loop.index  > 0 %}
+            {% set cantidadTd = 0%}
+            </tr> 
+            {% endif %}
+            {% endfor %}
+        </table>
+        {% endif %}
+  {% endfor %}
+  <br />
+  <img src="{{ asset('images/linea_hor_gris.jpg') }}" width="700" height="2" /><br />
+  <br />
+  {% if categoriaAdicionales is not null %}
+  {% set subcategorias = categoriaAdicionales.subcategorias  %} 
+    <span class="txt_rojo12_bold">Pizzas &gt; </span><span class="txt_gris12_bold">Adicionales / Recargo</span><br />
+    <table width="100%" height="73" border="0" cellspacing="3">
+      <tr>
+        <td width="182" height="67" align="left" valign="top">
+            <table width="153" border="0" cellspacing="0" cellpadding="4">
+                {% for subcategoria in subcategorias %}
+                    {% set productos = subcategoria.productos %}  
+                    {% for producto in productos %}
+                        <tr>
+                          <td width="20" valign="middle" class="txt_gris12"><input name="adicional_producto[]" value="{{ producto.id }}" type="hidden" /><input value="1" type="checkbox" name="adicional_producto_{{ producto.id}}" id="checkbox8" /></td>
+                          <td width="117" valign="middle" class="txt_gris12"><a href="#" title="{{ producto.textoDescriptivo }}" class="txt_gris12_listado">{{ producto.nombre }}</a></td>
+                        </tr>
+                     {% endfor %}
+                {% endfor %}
+             </table>
+         </td>
+        <td width="254" align="left" valign="top">
+            <table width="324" border="0" cellspacing="0" cellpadding="4">
+              <tr>
+                <td width="20" valign="middle" class="txt_gris12"><input type="checkbox" value="1" name="nuevo_recargo" id="nuevo_recargo" /></td>
+                <td width="108" valign="middle" class="txt_gris12"><input name="nombre_recargo" type="text" class="txt_gris12_listado" id="textfield4" size="20" /></td>
+                <td width="10" valign="middle" class="txt_gris12"><span class="txt_negro12_bold">$</span></td>
+                <td width="154" valign="middle" class="txt_gris12"><input name="precio_recargo" type="text" class="txt_gris12_listado" id="textfield5" size="6" /></td>                
+              </tr>
+              <tr>
+                <td height="26" valign="top" class="txt_gris12">&nbsp;</td>
+                <td valign="top" class="txt_grisclaro11">Nuevo Recargo</td>
+                <td valign="top" class="txt_grisclaro11">&nbsp;</td>
+                <td valign="top" class="txt_grisclaro11">Precio</td>
+              </tr>
+            </table>
+        </td>
+        <td width="246" align="left" valign="top">&nbsp;</td>
+      </tr>
+    </table>
+  {% endif %}
+  <br />
+  <img src="{{ asset('images/linea_hor_gris.jpg') }}" width="700" height="2" /><br />
+  <br />
+  <span class="txt_rojo12_bold"> Pizzas &gt; </span><span class="txt_gris12_bold">Comentario del Cliente</span><br />
+  <br />
+  <textarea name="comentarios" cols="120" rows="3" class="txt_gris12" id="comentarios"></textarea>
+  <br />
+  <br />
+  {% if categoriaFaina is not null %}
+  <table width="100%" height="36" border="0" cellspacing="3">
+    {% set subcategorias = categoriaFaina.subcategorias  %} 
+    {% set x = 0 %}
+    {% for subcategoria in subcategorias %}
+        {% set productos = subcategoria.productosOrdenados %}         
+        {% for producto in productos %}
+           {% set x = x + 1 %}
+           {% if x is odd %}
+            <tr>
+           {% endif %} 
+              <td width="344" align="center" {% if x is odd %} bgcolor="#666666" {% else%} bgcolor="#AFAFAF" {% endif %}>
+                <span class="txt_blanco12_bold">{{ producto.nombre }}</span>
+                <input name="faina_producto[]" value="{{ producto.id }}" type="hidden" />
+                <input name="faina_producto_{{ producto.id}}" type="text" class="txt_gris12 validate[integer]" id="textfield2" size="3" />
+                <span class="txt_grisclaro12">&nbsp;&nbsp;</span><span class="txt_blanco12">Cantidad de porciones</span>
+              </td>              
+            {% if x is not odd %}
+            </tr>
+            {%endif%}
+        {% endfor %}
+    {% endfor %}
+  </table>
+  {% endif %}
+  <p><img src="{{ asset('images/linea_hor_gris.jpg') }}" alt="" width="700" height="2" /><br />
+  </p>
+  <table width="100%" border="0" cellspacing="0" cellpadding="3">
+    <tr>
+      <td align="center"><div class="btnfondorojo"> <a href="#" class="enviar_comanda" > Agregar a comanda</a></div></td>
+    </tr>
+  </table>
+  <script>
+    $('.enviar_comanda').click(function(e) {  
+            e.preventDefault();
+            if(validarPorciones()) {
+                if($('.formulario').validationEngine('validate') == true){
+                    $('.formulario').submit();
+                }  
+            } else {
+                alert('DEBE SELECCIONAR LOS GUSTOS PARA TODAS LAS PORCIONES DE PIZZA');
+                return false;
+            }
+        
+    });    
+
+</script>

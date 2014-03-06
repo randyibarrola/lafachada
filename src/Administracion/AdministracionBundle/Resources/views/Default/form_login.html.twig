@@ -1,0 +1,46 @@
+{% extends '::login.html.twig' %}
+{% block login %}
+<form class="formulario" action="{{ path('login_check') }}" method="post">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="32%" height="32" align="left" class="tit_negro16">Iniciar sesi&oacute;n</td>
+    </tr>
+    <tr>
+        <td height="30" align="left" valign="bottom" class="txt_negro12_bold">Nombre de Usuario</td>
+    </tr>
+    <tr>
+        <td height="30" align="left"><input name="_username" type="text" class="txt_negro12 validate[required]" id="textfield" size="55" /></td>
+    </tr>
+    <tr>
+        <td height="30" align="left" valign="bottom" class="txt_negro12_bold">Contrase&ntilde;a</td>
+    </tr>
+    <tr>
+        <td height="30" align="left"><input name="_password" type="password" class="txt_negro12 validate[required]" id="textfield2" size="55" /></td>
+    </tr>
+    {#<tr>
+        <td height="30" align="left" valign="bottom" class="txt_negro12_bold">Contrase&ntilde;a Gerente</td>
+    </tr>
+    <tr>
+        <td height="30" align="left"><input name="textfield3" type="password" class="txt_negro12" id="textfield3" size="55" /></td>
+    </tr>#}
+</table>
+<br />
+<div class="btnfondorojo"> <a href="#" class="enviar">Iniciar Sesi&oacute;n </a></div>
+<br />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="left" class="txt_gris12"><input type="checkbox" name="checkbox" id="checkbox" />
+            Recordar contrase&ntilde;a</td>
+        <td align="right" class="txt_negro12">&nbsp;</td>
+    </tr>
+    <tr><td><br/></td></tr>
+    <tr>
+        <td align="center" class="txt_rojo12" >{% if error is defined and error is not null%}Usuario o Contraseña incorrectos{%endif%}</td>            
+        <td align="right" class="txt_negro12">&nbsp;</td>
+    </tr>    
+</table>
+</form>
+<script>
+
+</script>
+{% endblock%}

@@ -1,0 +1,79 @@
+{% extends '::administracion.html.twig' %}
+{% block content %}
+<div id="contenidogeneraladmin">
+    <table width="100%" border="0" cellspacing="0" cellpadding="3">
+        <tr>
+            <td height="26" align="right" class="txt_grisclaro12"><span class="txt_grisclaro11">Cantidad total: </span><span class="txt_grisclaro12_bold">{{ clientes|length }} Clientes</span></td>
+        </tr>
+    </table>
+    {% if is_granted('ROLE_ADMINISTRADOR')  %}
+    <table width="100%" border="0" cellpadding="3" cellspacing="0">
+        <tr>
+            <td height="40" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12">Sucursal<br />
+                <span >{% if is_granted('ROLE_ADMINISTRADOR')  %}<a class="{% if sucursal is null %}txt_rojo16 {% else %} txt_negro16 {%endif%}" href="{{ path('administracion_cliente', { 'ver': 'todas'} )  }}">Todas</a></span>{% endif %}
+                <span class="txt_negro16 ">    
+                       {% if is_granted('ROLE_ADMINISTRADOR')  %} 
+                            {% for suc in sucursales %}
+                            . <a href="{{ path('administracion_cliente', { 'sucursal': suc.nombre} )  }}" class="{% if app.request.query.get('sucursal') != suc.nombre %} txt_negro16 {% else %} txt_rojo16 {% endif %}">{{ suc.nombre }}</a> 
+                        {% endfor %}
+                    {% else %}
+                            <a href="{{ path('administracion_cliente', { 'sucursal': sucursal.nombre} )  }}" class="{% if app.request.query.get('sucursal') != sucursal.nombre %} txt_negro16 {% else %} txt_rojo16 {% endif %}">{{ sucursal.nombre }}</a>
+                    {% endif %}
+                    <br />
+                </span>              
+    </table>     
+    {% endif %}
+    <table width="100%" border="0" cellpadding="3" cellspacing="0">
+        <tr></tr>
+        <tr>
+            <td height="40" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12">Agenda <br />
+                {% for letter in 'a'|upper..'z'|upper %}
+                    <a href="{{ path('administracion_cliente', {'agenda':letter}) }}" class="txt_negro16"><span class="{% if letter == letra %} txt_rojo16 {%else%}txt_negro16{% endif%}"> {{ letter }} </span> {% if not loop.last %} .{%endif%}</a>
+                {% endfor%}
+            <br /></td>
+        </tr>
+    </table>
+    <table id="dataTable" class="display" width="100%" border="0" cellspacing="0" cellpadding="3">
+        <thead>
+            <tr>
+                <th align="center" class="txt_blanco12_bold">Apellido, Nombre</th>
+                <th align="center" class="txt_blanco12_bold">Teléfono</th>
+                <th align="center" class="txt_blanco12_bold" >Domicilio</th>
+                <th align="center" class="txt_blanco12_bold">Esquina</th>
+                {% if is_granted('ROLE_ADMINISTRADOR') %}<th></th>{% endif %}
+                <th></th>
+                {% if not is_granted('ROLE_ADMINISTRADOR') %}<th></th>{% endif %}
+                {% if is_granted('ROLE_ADMINISTRADOR') %}<th></th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes%}
+            {% set tel = cliente.primerTelefono %}
+            {% set dom = cliente.primerDomicilio %}
+            <tr>
+                <td width="19%" height="47" align="left" class="bordeabajo"><span class="txt_rojo16"><strong>{{ cliente.apellido }}</strong>,</span> <span class="txt_rojo16">{{ cliente.nombre }}</span></td>
+                <td width="19%" align="left" class="bordeabajo"><span class="txt_grisclaro12">Tel.: </span><span class="txt_gris12">{% if tel is not null%} ({{ tel.codigo }}) {{ tel.numero }} {% endif %}</span></td>
+                <td width="29%" align="left" class="bordeabajo"><span class="txt_grisclaro12">Domicilio:</span> <span class="txt_gris12">{% if dom is not null%} {{ dom.calle }} {% endif%}</span></td>
+                <td width="24%" align="left" class="bordeabajo"><span class="txt_grisclaro12">Esquina:</span> <span class="txt_gris12">{% if dom is not null%}{{ dom.esquina }}{% endif%} </span></td>
+                {% if is_granted('ROLE_ADMINISTRADOR') %}<td align="center" class="bordeabajo"><a href="{{ path('administracion_cliente_historial', {'id':cliente.id}) }}"><img src="{{ asset('images/icono_historial.png') }}" width="16" height="16" onclick="MM_showHideLayers('mapa','','show')" /></a></td>{% endif %}
+                <td width="3%" align="right" class="bordeabajo"><a href="{{ path('administracion_cliente_editar', {'id': cliente.id})}}"><img src="{{ asset('images/icono_ver.png') }}" width="16" height="16" /></a></td>
+                {% if not is_granted('ROLE_ADMINISTRADOR') %}<td width="3%" align="right" class="bordeabajo"><a  href="#"  ><img data-lat="{{ cliente.getPrimeraLatitud()  }}" data-lon="{{ cliente.getPrimeraLongitud()  }}" class="mapa_cliente" src="{{ asset('images/icono_mapa.png') }}" width="16" height="16" /></a></td>{% endif %}
+                {% if is_granted('ROLE_ADMINISTRADOR') %}<td width="3%" align="right" class="bordeabajo"><a href="{{ path('administracion_cliente_eliminar', {'id': cliente.id})}}"><img src="{{ asset('images/icono_eliminar_rojo.png') }}" width="16" height="16" /></a></td>{% endif %}
+            </tr> 
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <br />
+</div>
+
+<div id="mapa">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tabla_mapa">
+    <tr>
+      <td height="25" align="right"><a href="#" class="cerrar_mapa"><img src="{{ asset('images/icono_eliminar.png') }}" width="11" height="11" /></a></td>
+    </tr>
+  </table>
+{#<iframe class="iframe" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com.ar/maps?f=q&amp;source=s_q&amp;hl=es&amp;geocode=&amp;z=15&amp;output=embed&amp;ll=40.40429790000000000,-3.73902247724606700"></iframe><br /><small><a href="https://maps.google.com.ar/maps?f=q&amp;source=embed&amp;hl=es&amp;geocode=&amp;q=sta+maria+de+oro+2431+palermo&amp;aq=&amp;sll=-34.596172,-58.558303&amp;sspn=0.006845,0.015289&amp;g=sta+maria+de+oro+2431&amp;ie=UTF8&amp;hq=&amp;hnear=Fray+Justo+Santamar&iacute;a+de+Oro+2431,+Palermo,+Buenos+Aires&amp;ll=-34.58004,-58.42503&amp;spn=0.013692,0.030577&amp;t=m&amp;z=14" target="_blank" style="color:#0000FF;text-align:left"><br />
+<span class="txt_rojo12">Ver mapa más grande</span></a></small>#}
+</div>
+{% endblock %}

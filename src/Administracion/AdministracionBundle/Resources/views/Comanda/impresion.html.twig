@@ -1,0 +1,288 @@
+{% set letras = { '1':'A','2':'B','3':'C','4':'D'} %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>-. La Fachada .- Sistema  de delivery</title>
+<link href="{{ asset('css/estilos.css') }}" rel="stylesheet" type="text/css" />
+<style type="text/css">
+body {
+	background-color: #CCC;
+}
+</style>
+<script language="javascript" type="text/javascript">
+//FECHA ACTUAL EN FORMATO TEXTO
+//
+//Autor: Iván Nieto Pérez
+//Este script y otros muchos pueden
+//descarse on-line de forma gratuita
+//en El Código: www.elcodigo.com
+
+function MostrarFecha()
+   {
+   var nombres_dias = new Array("Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado")
+   var nombres_meses = new Array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
+
+   var fecha_actual = new Date()
+
+   dia_mes = fecha_actual.getDate()		//dia del mes
+   dia_semana = fecha_actual.getDay()		//dia de la semana
+   mes = fecha_actual.getMonth() + 1
+   anio = fecha_actual.getFullYear()
+
+   //escribe en pagina
+   document.write(nombres_dias[dia_semana] + ", " + dia_mes + " de " + nombres_meses[mes - 1] + " de " + anio)
+   }
+
+</script>
+<script language="javascript" type="text/javascript">
+//RELOJ 24 HORAS
+//
+//Autor: Iván Nieto Pérez
+//Este script y otros muchos pueden
+//descarse on-line de forma gratuita
+//en El Código: www.elcodigo.com
+
+var RelojID24 = null
+var RelojEjecutandose24 = false
+
+function DetenerReloj24 (){
+	if(RelojEjecutandose24)
+		clearTimeout(RelojID24)
+	RelojEjecutandose24 = false
+}
+
+function MostrarHora24 () {
+	var ahora = new Date()
+	var horas = ahora.getHours()
+	var minutos = ahora.getMinutes()
+	var segundos = ahora.getSeconds()
+	var ValorHora
+
+	//establece las horas
+	if (horas < 10)
+	     	ValorHora = "0" + horas
+	else
+		ValorHora = "" + horas
+
+	//establece los minutos
+	if (minutos < 10)
+		ValorHora += ":0" + minutos
+	else
+		ValorHora += ":" + minutos
+
+	//establece los segundos
+	if (segundos < 10)
+		ValorHora += ":0" + segundos
+	else
+		ValorHora += ":" + segundos
+        
+	document.reloj24.digitos.value = ValorHora
+	//si se desea tener el reloj en la barra de estado, reemplazar la anterior por esta
+	//window.status = ValorHora
+
+	RelojID24 = setTimeout("MostrarHora24()",1000)
+	RelojEjecutandose24 = true
+}
+
+function IniciarReloj24 () {
+	DetenerReloj24()
+	MostrarHora24()
+}
+
+window.onload = IniciarReloj24;
+if (document.captureEvents) {			//N4 requiere invocar la funcion captureEvents
+	document.captureEvents(Event.LOAD)
+}
+</script>
+
+
+</head>
+
+<body >
+<table width="325" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+      <td width="84" height="65" align="center" bgcolor="#FFFFFF" class="bordeabajo"><span class="txt_negro16_bold"><a href="{{ path('administracion_index') }}"><img src="{{ asset('images/logo_lafachada.png') }}" width="61" height="63" /></a>
+        <br />
+    </span></td>
+    <td width="241" align="left" bgcolor="#FFFFFF" class="bordeabajo"><span class="txt_negro16_bold">La Fachada</span><br />
+      <span class="txt_negro12_bold">Tel. (011) 4553 - 4748 </span><br />
+    <span class="txt_negro12">Freire 1100, Colegiales . C.A.B.A.</span></td>
+  </tr>
+</table>
+{% set cliente = comanda.cliente %}        
+{% set domicilio = comanda.domicilio %}
+<table width="325" height="67" border="0" align="center" cellpadding="8" cellspacing="0" class="bordeabajo">
+  <tr>
+    <td width="320" align="left" bgcolor="#FFFFFF">
+    <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="251" height="22" align="center" class="txt_negro12_bold" style="border-bottom-width: 2px; border-bottom-color: black; border-bottom-style: solid"> -. NO VÁLIDO COMO FACTURA.- </td>
+      </tr>
+    </table>        
+    <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="251" height="22" align="right" class="txt_negro12_bold"> {{ comanda.codigo }}</td>
+      </tr>
+    </table>
+    {% if domicilio is not null %}
+      <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td width="251" height="41" align="left"><span class="txt_negro16_bold">{{ domicilio.calle }} {{ domicilio.pisoDepartamento }}</span><br />
+            <span class="txt_gris12">{{ domicilio.esquinaLocalidad }}</span><span class="txt_grisclaro12"><br />
+            </span></td>
+        </tr>
+      </table>
+      {% if domicilio.comentario %}
+      <table width="290" height="39" border="0" align="center" cellpadding="0" cellspacing="0" class="txt_comentariosgenerales">
+        <tr>
+          <td width="251" height="35" align="left">
+            {{ domicilio.comentario  }}</td>
+        </tr>
+    </table>
+    {% endif %}
+     {% endif %}
+    </td>
+  </tr>
+</table>
+{% for orden in comanda.ordenesPadres%}
+    <table width="325" height="67" border="0" align="center" cellpadding="8" cellspacing="0" class="bordeabajo">
+      <tr>
+        <td width="320" align="left" bgcolor="#FFFFFF">
+         {% if orden.categoria != 'Pizzas' %}
+          <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="44" height="22" align="left" class="txt_negro16_bold">{{ orden.categoria }}</td>
+          </tr>
+         </table>
+        {% endif %}
+        {% set detalles = orden.comandaOrdenDetalles %}
+        {% if orden.categoria != "Pizzas" %}
+            <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+            {% set cantidad = 0 %}
+            {% for detalle in detalles  %} 
+                {% set cantidad = cantidad + detalle.cantidad %}
+                  <tr>
+                    <td width="16" height="18" align="left" class="txt_negro12">{{ detalle.cantidad }}</td>
+                    <td width="216" align="left"><span class="txt_negro12">{{ detalle.producto.nombre }}</span></td>
+                    {% if loop.last and orden.categoria.nombre != 'Empanadas'  %}
+                        <td width="58" align="right" class="txt_negro12_bold">$ {{ orden.precio }}</td>
+                    {% endif %}                    
+                  </tr>
+            {% endfor %}
+            </table>
+            {% if orden.categoria.nombre == 'Empanadas' %}
+            <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="215" height="23" align="left"><span class="txt_negro12">Cantidad Total: </span><span class="txt_negro12_bold">{{ cantidad }} unidades</span></td>
+                <td width="58" align="right" class="txt_negro12_bold">$ {{ orden.precio }}</td>
+              </tr>
+            </table>
+            {% endif %}                
+            {% if orden.comentario %}
+                <table width="290" height="28" border="0" align="center" cellpadding="3" cellspacing="0" class="txt_comentariosproductos">
+                  <tr>
+                    <td width="251" height="28" align="left">{{ orden.comentario }}.</td>
+                  </tr>
+                </table>
+            {% endif %}
+
+          {% else %} 
+                <br />
+                <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="44" height="22" align="left" class="txt_negro16_bold">{{ orden.tipoPizza == 1 ? 'Pizza Grande' : 'Pizza Chica'}} {% if orden.unidades > 1 %} (x{{orden.unidades}}) {% endif %}</td>
+                  </tr>
+                </table>
+                {% for detalle in detalles  %}  
+                <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <tr>
+                      <td width="240" align="left">
+                    <span class="txt_negro12">{{ detalle.producto.nombre }} </span><br /></td>
+                    <td width="50" align="right" class="txt_negro22_bold"><span class="txt_negro12_bold">$ {{ detalle.precioPizza(orden.tipoPizza, orden.porcientoPizza(detalle.numeroPorcionPizza)) }}</span></td>
+                  </tr>
+                </table>
+                {% endfor %}
+                {% if orden.comentario %}
+                <table width="290" height="28" border="0" align="center" cellpadding="3" cellspacing="0" class="txt_comentariosproductos">
+                  <tr>
+                    <td width="251" height="28" align="left">{{ orden.comentario }}.</td>
+                  </tr>
+                </table>
+               {% endif %} 
+          {% endif %} 
+        </td>
+      </tr>
+    </table>
+    {# mostrando ahora ordenes hijas #} 
+    {% set ordenesHijas = orden.getOrdenesHijas %}
+    {% for hija in ordenesHijas %}        
+        <table width="325" height="67" border="0" align="center" cellpadding="8" cellspacing="0" class="bordeabajo">
+          <tr>
+            <td width="320" align="left" bgcolor="#FFFFFF">
+              <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="44" height="22" align="left" class="txt_negro16_bold">{{ hija.categoria }} {% if hija.unidadesOrdenPadre > 1 %} (x{{hija.unidadesOrdenPadre}}) {% endif %}</td>
+              </tr>
+            </table>
+            {% set detalles = hija.comandaOrdenDetalles %}
+            
+            <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+            {% set cantidad = 0 %}
+            {% for detalle in detalles  %} 
+                {% set cantidad = cantidad + detalle.cantidad %}
+                  <tr>
+                    <td width="16" height="18" align="left" class="txt_negro12">{{ detalle.cantidad }}</td>
+                    <td width="216" align="left"><span class="txt_negro12">{{ detalle.producto.nombre }}</span></td>
+                    {% if loop.last and hija.categoria.nombre != 'Empanadas'  %}
+                        <td width="58" align="right" class="txt_negro12_bold">$ {{ hija.precio }}</td>
+                    {% endif %}
+                  </tr>
+            {% endfor %}
+            </table>
+            {% if hija.categoria.nombre == 'Empanadas' %}
+            <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="215" height="23" align="left"><span class="txt_negro12">Cantidad Total: </span><span class="txt_negro12_bold">{{ cantidad }} unidades</span></td>
+                <td width="58" align="right" class="txt_negro12_bold">$ {{ hija.precio }}</td>
+              </tr>
+            </table>
+            {% endif %}
+            </td>
+          </tr>
+        </table>        
+    {% endfor %}
+        
+        
+{% endfor %}
+{% if comanda.descuento > 0 %}
+<table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="164" height="20" align="left" class="txt_negro12_bold">Descuento {{ comanda.descuento  }}%</td>
+  </tr>
+</table>
+{% endif %}
+<table width="325" height="108" border="0" align="center" cellpadding="8" cellspacing="0" class="bordeabajo">
+  <tr>
+    <td width="320" height="106" align="left" bgcolor="#FFFFFF"><table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+      <tr>
+          <td width="98" align="left" valign="top"><span class="txt_grisclaro11">{{ "now"|date("d.m.Y") }} // {{ "now"|date("Hi") }}</span></td>
+          <td width="192" align="right" valign="top"><span class="txt_gris12_bold"><span class="txt_negro22_bold">TOTAL: $ {{ comanda.precioFinal | number_format('2') }}</span><br />
+        </span><span class="txt_negro12">Llevar cambio de $ {{ comanda.cambio }}</span></td>
+      </tr>
+    </table>
+      <table width="290" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr></tr>
+        <tr>
+          <td height="33" align="left" class="txt_negro12">Repartidor: {% if comanda.repartidor is not null %}{{ comanda.repartidor.nombreCompleto }} {% endif %}</td>
+        </tr>
+        <tr></tr>
+      </table>
+      <br /></td>
+  </tr>
+</table>        
+</body>
+</html>
+<script>
+window.print();
+</script>

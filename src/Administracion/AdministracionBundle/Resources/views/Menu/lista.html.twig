@@ -1,0 +1,99 @@
+{% extends '::administracion.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/menu.js') }}" type="text/javascript"></script> 
+    <script type="text/javascript">
+        url_subcategorias = '{{ path('administracion_categoria_subcategorias') }}';
+        url_lista = '{{ path('administracion_menu_detalle') }}';
+    </script> 
+
+{% endblock %}
+{% block content %}
+
+  <div id="contenidogeneraladmin">
+    {% if is_granted('ROLE_ADMINISTRADOR')  %}  
+    <table width="100%" border="0" cellpadding="3" cellspacing="0">
+      <tr>
+          <td colspan="5"><span class="txt_grisclaro12">Alta de Categorías y Subcategorías de productos</span></td>              
+      </tr>
+        <tr>
+            <td colspan="5" height="10px"></td>              
+        </tr>      
+      <tr>
+        <td width="550" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12"><span class="txt_negro16_bold">Categor&iacute;as </span>
+          <select class="categoria" name="select10" id="categoria">
+            <option value="0" selected="selected">Todas</option>
+            {% for categoria in categorias %}
+                <option value="{{ categoria.id }}" >{{ categoria }}</option>
+            {% endfor %}
+          </select>
+          <table width="140" border="0" align="right" cellpadding="3" cellspacing="0">
+            <tr>
+              <td width="13"><img src="{{ asset('images/icono_editar.png') }}" alt="" width="12" height="12" /></td>
+              <td width="108"><a href="#" class="txt_negro12_bold editar_categoria"> Editar</a></td>                    
+              <td width="13"><img src="{{ asset('images/icono_agregar.png') }}" alt="" width="12" height="12" /></td>
+              <td width="108"><a href="#" class="txt_negro12_bold agregar_categoria"> Agregar</a></td>
+            </tr>
+          </table>
+        </td>
+        <td width="60" align="left" bgcolor="" class="txt_grisclaro12">&nbsp;</td>
+        <td width="550" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12"><span class="txt_negro16_bold">Subcategor&iacute;as </span>
+          <select class="subcategoria" name="select11"  id="subcategoria">
+             {# {% for subcategoria in subcategorias %}#}
+                  <option value="0">Seleccione categoría</option>            
+              {#{% endfor %}   #}       
+          </select>
+          <img class="ajaxLoading" height="16" width="16" src="/images/ajaxLoading.gif" />        
+                
+          <table width="160" border="0" align="right" cellpadding="3" cellspacing="0">
+            <tr>
+              <td width="13"><img src="{{ asset('images/icono_editar.png') }}" alt="" width="12" height="12" /></td>
+              <td width="108"><a href="#" class="txt_negro12_bold editar_subcategoria"> Editar</a></td>                
+              <td width="13"><img src="{{ asset('images/icono_agregar.png') }}" alt="" width="12" height="12" /></td>
+              <td width="108"><a href="#" class="txt_negro12_bold agregar_subcategoria"> Agregar</a></td>
+            </tr>
+          </table></td>
+      </tr>
+      <tr >
+          <td id="nueva_categoria" style="display:none" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12"><span style="margin-right: 39px;" class="txt_grisclaro12">Nombre </span>
+              <input class="txt_grisclaro12" placeholder="Nombre categoría" value="" id="nueva_categoria_nombre" name="nueva_categoria_nombre" type="text" size="50" />
+               <img class="ajaxLoading" height="16" width="16" src="/images/ajaxLoading.gif" />  
+          <table width="50" border="0" align="right" cellpadding="3" cellspacing="0">
+            <tr>
+                <td width="50%" align="rigth"><a href="" data-url="{{ path('administracion_categoria_agregar') }}" class="nueva_categoria"><img src="{{ asset('images/icono_guardar.png') }}" alt="" width="12" height="12" /></a></td>
+                <td width="50%" align="left"><a href="" class="eliminar_categoria"><img src="{{ asset('images/icono_eliminar_rojo.png') }}" ></a></td>
+            </tr>
+          </table>
+        </td>
+         <td width="60" align="left" bgcolor="#FFFFFF" class="txt_grisclaro12">&nbsp;</td>
+         <td id="nueva_subcategoria" style="display:none" align="left" bgcolor="#f1f1f1" class="txt_grisclaro12"><span style="margin-right: 39px;" class="txt_grisclaro12">Nombre </span>
+              <input class="txt_grisclaro12" placeholder="Nombre subcategoría" value="" id="nueva_subcategoria_nombre" name="nueva_subcategoria_nombre" type="text" size="50" />
+               <img class="ajaxLoading" height="16" width="16" src="/images/ajaxLoading.gif" />  
+          <table width="50" border="0" align="right" cellpadding="3" cellspacing="0">
+            <tr>
+                <td width="50%" align="rigth"><a href="" data-url="{{ path('administracion_subcategoria_agregar') }}" class="nueva_subcategoria"><img src="{{ asset('images/icono_guardar.png') }}" alt="" width="12" height="12" /></a></td>
+                <td width="50%" align="left"><a href="" class="eliminar_subcategoria"><img src="{{ asset('images/icono_eliminar_rojo.png') }}" ></a></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+    </table>
+    {% endif %}
+    <br />
+    <div id="detalleLista">
+        {{ render(controller('AdministracionBundle:Menu:detalleLista'))  }}
+    </div>
+    <br>
+    <p></p>
+</div>
+
+{% endblock %}
